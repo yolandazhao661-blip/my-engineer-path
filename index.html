@@ -29,27 +29,38 @@
     <p>点击按钮获取全球智慧。</p >
     <button>点我试试</button>
 
-    <!-- 👇 就在这里！在 </body> 之前插入这段逻辑 -->
     <script>
-      async function getQuote() {
-        const btn = document.querySelector('button');
-        btn.innerText = "正在加载全球智慧...";
-        
-        try {
-          // 调用全球名言 API
-          const response = await fetch('https://api.quotable.io/random');
-          const data = await response.json();
-          
-          document.querySelector('p').innerText = `"${data.content}" — ${data.author}`;
-          btn.innerText = "再来一句！";
-        } catch (error) {
-          btn.innerText = "网络有点小脾气，重试一下？";
-          console.error("报错啦：", error);
-        }
-      }
+    // 1. 准备一个本地“备胎”数据库
+const localQuotes = [
+    { content: "学而不思则罔，思而不学则殆。", author: "孔子" },
+    { content: "Stay Hungry, Stay Foolish.", author: "Steve Jobs" },
+    { content: "代码不只是写给机器看的，更是写给未来的自己看的。", author: "匿名工程师" }
+];
 
-      // 让按钮点一下就执行上面的动作
-      document.querySelector('button').onclick = getQuote;
+async function getQuote() {
+    const btn = document.querySelector('button');
+    const display = document.querySelector('p');
+    btn.innerText = "正在连接全球脑库...";
+
+    try {
+        // 尝试从网络获取
+        const response = await fetch('https://api.quotable.io/random', { timeout: 5000 });
+        if (!response.ok) throw new Error('网络不给力');
+        
+        const data = await response.json();
+        display.innerText = `"${data.content}" — ${data.author}`;
+        btn.innerText = "再来一句！";
+    } catch (error) {
+        // 🚀 核心逻辑：如果网络失败，切换到本地数据
+        console.log("网络请求失败，正在启用本地备份...");
+        const randomQuote = localQuotes[Math.floor(Math.random() * localQuotes.length)];
+        
+        display.innerText = `[本地缓存] "${randomQuote.content}" — ${randomQuote.author}`;
+        btn.innerText = "离线模式：再来一句";
+    }
+}
+
+document.querySelector('button').onclick = getQuote;
 </script>
 </body>
 </html>
