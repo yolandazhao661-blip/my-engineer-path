@@ -26,24 +26,30 @@
 </head>
 <body>
     <h1>我的工程师之路</h1>
-<p>这是我亲手写的第一个网页，我正在学习全球通用的技术能力。</p >
-<button onclick="alert('恭喜你，代码运行成功！')">点我试试</button><script>
-  // 这就是 JavaScript，工程师用来写逻辑的地方
-  let count = 0;
-  function updateCounter() {
-    count++;
-    const btn = document.querySelector('button');
-    btn.innerText = `你已经点了 ${count} 次！`;
-    
-    // 加个彩蛋：点到 5 次变颜色
-    if (count >= 5) {
-      btn.style.backgroundColor = '#28a745'; // 变成绿色
-      btn.innerText += " —— 坚持就是胜利！";
-    }
-  }
-  
-  // 修改原本按钮的 onclick 属性
-  document.querySelector('button').setAttribute('onclick', 'updateCounter()');
+    <p>点击按钮获取全球智慧。</p >
+    <button>点我试试</button>
+
+    <!-- 👇 就在这里！在 </body> 之前插入这段逻辑 -->
+    <script>
+      async function getQuote() {
+        const btn = document.querySelector('button');
+        btn.innerText = "正在加载全球智慧...";
+        
+        try {
+          // 调用全球名言 API
+          const response = await fetch('https://api.quotable.io/random');
+          const data = await response.json();
+          
+          document.querySelector('p').innerText = `"${data.content}" — ${data.author}`;
+          btn.innerText = "再来一句！";
+        } catch (error) {
+          btn.innerText = "网络有点小脾气，重试一下？";
+          console.error("报错啦：", error);
+        }
+      }
+
+      // 让按钮点一下就执行上面的动作
+      document.querySelector('button').onclick = getQuote;
 </script>
 </body>
 </html>
