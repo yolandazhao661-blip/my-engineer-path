@@ -1,66 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><style>
-  body {
-    background-color: #f0f2f5;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 50px;
-  }
-  h1 { color: #1a73e8; }
-  button {
-    padding: 10px 20px;
-    background-color: #1a73e8;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  button:hover { background-color: #1557b0; }
-</style>
+
+<head>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            /* 开启弹性布局 */
+            flex-direction: column;
+            /* 垂直排列 */
+            justify-content: center;
+            /* 水平居中 */
+            align-items: center;
+            /* 垂直居中 */
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            /* 增加点击动画感 */
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
 <body>
-    <h1>我的工程师之路</h1>
-    <p>点击按钮获取全球智慧。</p >
-    <button>点我试试</button>
+    <div class="card">
+    <h1>我的全栈之路</h1>
+    
+    <!-- 👇 加入这张图片 -->
+    < img src="hardware.png" alt="我的第一个电路" style="width: 100%; border-radius: 8px; margin-bottom: 15px;">
+    
+    <p>这是我今天在 Wokwi 上通过代码控制的物理电路。</p >
+    <button onclick="getQuote()">获取名言</button>
+</div>
+
 
     <script>
-    // 1. 准备一个本地“备胎”数据库
-const localQuotes = [
-    { content: "学而不思则罔，思而不学则殆。", author: "孔子" },
-    { content: "Stay Hungry, Stay Foolish.", author: "Steve Jobs" },
-    { content: "代码不只是写给机器看的，更是写给未来的自己看的。", author: "匿名工程师" }
-];
+        // 1. 准备一个本地“备胎”数据库
+        const localQuotes = [
+            { content: "学而不思则罔，思而不学则殆。", author: "孔子" },
+            { content: "Stay Hungry, Stay Foolish.", author: "Steve Jobs" },
+            { content: "代码不只是写给机器看的，更是写给未来的自己看的。", author: "匿名工程师" }
+        ];
 
-async function getQuote() {
-    const btn = document.querySelector('button');
-    const display = document.querySelector('p');
-    btn.innerText = "正在连接全球脑库...";
+        async function getQuote() {
+            const btn = document.querySelector('button');
+            const display = document.querySelector('p');
+            btn.innerText = "正在连接全球脑库...";
 
-    try {
-        // 尝试从网络获取
-        const response = await fetch('https://api.quotable.io/random', { timeout: 5000 });
-        if (!response.ok) throw new Error('网络不给力');
-        
-        const data = await response.json();
-        display.innerText = `"${data.content}" — ${data.author}`;
-        btn.innerText = "再来一句！";
-    } catch (error) {
-        // 🚀 核心逻辑：如果网络失败，切换到本地数据
-        console.log("网络请求失败，正在启用本地备份...");
-        const randomQuote = localQuotes[Math.floor(Math.random() * localQuotes.length)];
-        
-        display.innerText = `[本地缓存] "${randomQuote.content}" — ${randomQuote.author}`;
-        btn.innerText = "离线模式：再来一句";
-    }
-}
+            try {
+                // 尝试从网络获取
+                const response = await fetch('https://api.quotable.io/random', { timeout: 5000 });
+                if (!response.ok) throw new Error('网络不给力');
 
-document.querySelector('button').onclick = getQuote;
-</script>
+                const data = await response.json();
+                display.innerText = `"${data.content}" — ${data.author}`;
+                btn.innerText = "再来一句！";
+            } catch (error) {
+                // 🚀 核心逻辑：如果网络失败，切换到本地数据
+                console.log("网络请求失败，正在启用本地备份...");
+                const randomQuote = localQuotes[Math.floor(Math.random() * localQuotes.length)];
+
+                display.innerText = `[本地缓存] "${randomQuote.content}" — ${randomQuote.author}`;
+                btn.innerText = "离线模式：再来一句";
+            }
+        }
+
+        document.querySelector('button').onclick = getQuote;
+    </script>
 </body>
+
 </html>
